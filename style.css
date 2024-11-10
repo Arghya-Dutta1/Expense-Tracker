@@ -1,3 +1,6 @@
+body {
+    scroll-behavior: smooth;
+}
 .landing-bg {
   background-image: url("./assests/dashboard.jpg");
   background-size: cover;
