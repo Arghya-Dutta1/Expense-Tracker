@@ -164,6 +164,62 @@ function updateChart() {
   budgetChart.update();
 }
 
+function downloadPDF() {
+  // Import the jsPDF library
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Set title and basic information for the PDF
+  doc.setFontSize(15);
+  doc.text("<---------------------------------Expense Tracker Summary----------------------------->", 10, 10);
+  doc.setFontSize(10);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, 20);
+  doc.setFontSize(12);
+  doc.text("Financial Overview:", 10, 40);
+
+  // Display total income, expenses, and budget
+  doc.setFontSize(10);
+  doc.text(`Total Income: $${totalIncome.toFixed(2)}`, 10, 50);
+  doc.text(`Total Expenses: $${totalExpenses.toFixed(2)}`, 10, 60);
+  doc.text(`Remaining Budget: $${(budget - totalExpenses).toFixed(2)}`, 10, 70);
+
+  // Add a section for income items
+  doc.setFontSize(12);
+  doc.text("Income Entries:", 10, 90);
+  let yOffset = 100;
+  document.querySelectorAll("#income-list .income-item").forEach((item, index) => {
+    const text = item.innerText.replace("Delete", "").trim();
+    doc.setFontSize(10);
+    doc.text(`${index + 1}. ${text}`, 10, yOffset);
+    yOffset += 10;
+  });
+
+  // Add a section for expense items
+  doc.setFontSize(12);
+  doc.text("Expense Entries:", 10, yOffset + 10);
+  yOffset += 20;
+  document.querySelectorAll("#expense-list .expense-item").forEach((item, index) => {
+    const text = item.innerText.replace("Delete", "").trim();
+    doc.setFontSize(10);
+    doc.text(`${index + 1}. ${text}`, 10, yOffset);
+    yOffset += 10;
+  });
+
+  // Add a random financial quote at the end
+  doc.setFontSize(12);
+  doc.text("Financial Quote:", 10, yOffset + 10);
+  yOffset += 20;
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  doc.setFontSize(10);
+  doc.text(randomQuote, 10, yOffset, { maxWidth: 180 }); // Wrap text to fit within PDF width
+
+  doc.text("<--------------------------------------------------Thank You for using our Expense Tracker---------------------------------------------->", 10, yOffset+20);
+
+  // Download the generated PDF
+  doc.save("expense_report.pdf");
+}
+
+
 const quotes = [
     "An investment in knowledge pays the best interest.\n\n - Benjamin Franklin",
     "Do not save what is left after spending, but spend what is left after saving.\n\n - Warren Buffett",
