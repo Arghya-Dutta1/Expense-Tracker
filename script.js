@@ -9,6 +9,9 @@ let budget = 0;
 let totalExpenses = 0;
 let totalIncome = 0;
 
+const WARNING_THRESHOLD = 0.8; // 80% of the budget
+const EXCEEDED_THRESHOLD = 1.0; // 100% of the budget
+
 function setBudget() {
   const budgetInput = document.getElementById("budget-input").value;
   budget = parseFloat(budgetInput) || 0;
@@ -133,6 +136,38 @@ function updateDashboard() {
   document.getElementById(
     "total-expenses"
   ).textContent = `$${totalExpenses.toFixed(2)}`;
+
+  // Check for budget alerts
+  checkBudgetAlert(remainingBudget);
+}
+
+function checkBudgetAlert(remainingBudget) {
+  const expenseRatio = totalExpenses / budget;
+
+  // Check if expenses are near or over the budget
+  if (expenseRatio >= EXCEEDED_THRESHOLD) {
+    showAlert("Budget Exceeded", "You have exceeded your budget! Consider reducing expenses.");
+  } else if (expenseRatio >= WARNING_THRESHOLD) {
+    showAlert("Warning: Budget Approaching Limit", "You are approaching your budget limit. Spend cautiously.");
+  } else {
+    clearAlert();
+  }
+}
+
+// Function to show an alert message on the UI
+function showAlert(title, message) {
+  const alertBox = document.getElementById("alert-box");
+  alertBox.innerHTML = `
+    <div class="bg-red-600 text-white p-4 rounded-lg shadow-lg mt-4">
+      <strong>${title}</strong><br>${message}
+    </div>
+  `;
+}
+
+// Function to clear the alert message
+function clearAlert() {
+  const alertBox = document.getElementById("alert-box");
+  alertBox.innerHTML = "";
 }
 
 // Initialize and update the Chart
@@ -218,6 +253,49 @@ function downloadPDF() {
   // Download the generated PDF
   doc.save("expense_report.pdf");
 }
+
+function downloadCSV() {
+  // Define the CSV header
+  let csvContent = "Data Type,Category,Amount,Description\n";
+
+  // Add Income entries to CSV
+  csvContent += "Income,,,\n"; // Income section header
+  document.querySelectorAll("#income-list .income-item").forEach(item => {
+    const [categoryPart, amountDesc] = item.innerText.split(" | Income: ");
+    const category = categoryPart.replace("Category: ", "").trim();
+    const [amountPart, description] = amountDesc.split(" - ");
+    const amount = amountPart.replace("$", "").trim();
+    csvContent += `Income,${category},${amount},${description.trim()}\n`;
+  });
+
+  // Add Expense entries to CSV
+  csvContent += "\nExpense,,,\n"; // Expense section header
+  document.querySelectorAll("#expense-list .expense-item").forEach(item => {
+    const [descCategory, amount] = item.innerText.split(": ");
+    const [description, categoryPart] = descCategory.split(" (");
+    const category = categoryPart.replace(")", "").trim();
+    csvContent += `Expense,${category},${amount.replace("$", "").trim()},${description.trim()}\n`;
+  });
+
+  // Add summary (total income, total expenses, remaining budget)
+  csvContent += "\nSummary,,,\n"; // Summary section header
+  csvContent += `Total Income,,${totalIncome.toFixed(2)},\n`;
+  csvContent += `Total Expenses,,${totalExpenses.toFixed(2)},\n`;
+  csvContent += `Remaining Budget,,${(budget - totalExpenses).toFixed(2)},\n`;
+
+  // Create a Blob and use it to generate a downloadable link
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.setAttribute("href", url);
+  link.setAttribute("download", "expense_report.csv");
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 
 
 const quotes = [
