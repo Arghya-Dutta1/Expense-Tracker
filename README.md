@@ -2,7 +2,8 @@
 A simple front end web application that allows users to set a budget, track expenses, and add income. The app provides an interactive dashboard with a pie chart showing the breakdown of the budget, expenses, and income. It also allows users to add, delete, and categorize their expenses and income.
 
 
-![image](https://github.com/user-attachments/assets/0d27d544-7025-4252-9816-a166a659f2f6)
+![Screenshot 2024-11-11 224547](https://github.com/user-attachments/assets/bdb80009-582b-40fc-9127-2a5ef335f348)
+
 
 ## Features
 
