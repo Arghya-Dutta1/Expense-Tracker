@@ -132,6 +132,7 @@
     <section id="dashboard" class="py-16 px-4">
       <div class="container mx-auto text-center">
         <h2 class="text-3xl font-semibold text-yellow-400 mb-6">Dashboard</h2>
+        <div id="alert-box"></div>
         <div class="bg-gray-700 p-6 rounded-lg shadow-lg space-y-4">
           <p class="text-lg">
             Remaining Budget:
@@ -159,8 +160,9 @@
             onclick="downloadPDF()"
             class="bg-green-500 text-white py-2 px-4 rounded-lg"
           >
-            Export to PDF
+            Download PDF
           </button>
+          <button onclick="downloadCSV()" class="bg-blue-500 text-white py-2 px-4 rounded-lg">Download CSV</button>
         </div>
       </div>
     </section>
