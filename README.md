@@ -1,5 +1,5 @@
 # Expense-Tracker
-A simple front end web application that allows users to set a budget, track expenses, and add income. The app provides an interactive dashboard with a different charts showing the breakdown of the budget, expenses, and income. It also allows users to add, delete, and categorize their expenses and income, and later export it to pdf and csv file.
+A simple front end web application that allows users to set a budget, track expenses, and add income. The app provides an interactive dashboard with different charts (doughnut, bar, line, etc) showing the breakdown of the budget, expenses, and income. It also allows users to add, delete, and categorize their expenses and income, and later export it to pdf and csv file.
 
 
 ![Screenshot 2024-11-11 224547](https://github.com/user-attachments/assets/bdb80009-582b-40fc-9127-2a5ef335f348)
