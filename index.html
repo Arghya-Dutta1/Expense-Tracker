@@ -310,7 +310,7 @@
     </section>
 
     <!-- Connect with Us Section -->
-    <section id="contact" class="py-16 px-4 bg-gray-800">
+    <!-- <section id="contact" class="py-16 px-4 bg-gray-800">
       <div class="container mx-auto text-center">
         <h2 class="text-3xl font-semibold text-yellow-400 mb-6">
           Connect with Us
@@ -319,7 +319,6 @@
           Have any questions? Feel free to reach out to us!
         </p>
 
-        <!-- Contact Form -->
         <form
           action="#"
           method="POST"
@@ -378,7 +377,100 @@
           </button>
         </form>
       </div>
-    </section>
+    </section> -->
+
+    <!-- Connect with Us Section -->
+<section id="contact" class="py-16 px-4 bg-gray-800">
+  <div class="container mx-auto">
+    <h2 class="text-3xl font-semibold text-yellow-400 mb-6 text-center">
+      Connect with Us
+    </h2>
+    <p class="text-lg text-gray-400 mb-8 text-center">
+      Have any questions? Feel free to reach out to us!
+    </p>
+
+    <!-- Flex Container for Map and Contact Form -->
+    <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
+      
+      <!-- Google Map Embed -->
+      <div class="w-full md:w-1/2 h-96 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+        <iframe
+          title="map"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d27288.248099616132!2d75.70063359999999!3d31.247564799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391a5f5e9c489cf3%3A0x4049a5409d53c300!2sLovely%20Professional%20University!5e0!3m2!1sen!2sin!4v1731488256271!5m2!1sen!2sin"
+          width="100%"
+          height="100%"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          aria-hidden="false"
+          tabindex="0"
+        ></iframe>
+      </div>
+
+      <!-- Contact Form -->
+      <form
+        action="#"
+        method="POST"
+        class="bg-gray-700 p-8 rounded-lg shadow-lg max-w-lg w-full"
+      >
+        <div class="mb-4">
+          <label
+            for="name"
+            class="block text-yellow-400 text-sm font-semibold mb-2"
+            >Your Name</label
+          >
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your name"
+            class="w-full p-2 rounded text-gray-900"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label
+            for="email"
+            class="block text-yellow-400 text-sm font-semibold mb-2"
+            >Your Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            class="w-full p-2 rounded text-gray-900"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label
+            for="message"
+            class="block text-yellow-400 text-sm font-semibold mb-2"
+            >Your Message</label
+          >
+          <textarea
+            id="message"
+            name="message"
+            rows="4"
+            placeholder="Write your message"
+            class="w-full p-2 rounded text-gray-900"
+          ></textarea>
+        </div>
+
+        <button
+          type="button"
+          class="px-6 py-2 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-500"
+          onclick="submitForm()"
+        >
+          Send Message
+        </button>
+      </form>
+      
+    </div>
+  </div>
+</section>
+
 
     <!-- Footer Section -->
     <footer class="bg-gray-800 text-gray-300 py-8 mt-16">
