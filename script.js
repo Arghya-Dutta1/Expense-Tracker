@@ -31,54 +31,72 @@ function addIncome() {
 
   if (incomeInput > 0) {
     totalIncome += incomeInput;
-    budget += incomeInput; // Increase the budget by income amount
-    document.getElementById("income-input").value = ""; // Clear input field
-    document.getElementById("income-description").value = ""; // Clear description field
+    budget += incomeInput; // Increase budget by income amount
 
-    // Add income to list with category and description
+    // Clear input fields
+    document.getElementById("income-input").value = "";
+    document.getElementById("income-description").value = "";
+
+    // Create a unique ID for the income item
+    const incomeId = `income-${Date.now()}`;
+
+    // Add income to the primary income list
     const incomeList = document.getElementById("income-list");
     const listItem = document.createElement("li");
-    listItem.className = "income-item"; // Apply income item styles
+    listItem.className = "income-item";
+    listItem.id = incomeId; // Set unique ID for primary list item
 
     listItem.innerHTML = `
-        <span class="income-category">${category} | $${incomeInput.toFixed(
-      2
-    )} | ${description}</span>
-        <button class="delete-income-btn" onclick="deleteIncome(this, ${incomeInput})">Delete</button>
-      `;
+      <span class="income-category">${category} | $${incomeInput.toFixed(
+        2
+      )} | ${description}</span>
+      <button class="delete-income-btn" onclick="deleteIncome('${incomeId}', ${incomeInput})">Delete</button>
+    `;
     incomeList.appendChild(listItem);
 
-    //dashboard
+    // Add income to the dashboard income list
     const incomeList1 = document.getElementById("income-list-1");
     const listItem1 = document.createElement("li");
-    listItem1.className = "income-item"; // Apply income item styles
+    listItem1.className = "income-item";
+    listItem1.id = `dashboard-${incomeId}`; // Set unique ID for dashboard list item
 
     listItem1.innerHTML = `
-        <span class="income-category">Income: $${incomeInput.toFixed(
-          2
-        )} - ${description} (${category})</span>
-      `;
+      <span class="income-category">Income: $${incomeInput.toFixed(
+        2
+      )} - ${description} (${category})</span>
+    `;
     incomeList1.appendChild(listItem1);
 
-    // Update dashboard and chart
+    // Update dashboard and charts
     updateDashboard();
     updateBarChart();
     updateLineChart();
-    updateChart(); // Update chart after adding income
+    updateChart();
   }
 }
 
-function deleteIncome(button, incomeAmount) {
+function deleteIncome(incomeId, incomeAmount) {
+  // Adjust totals by removing the income amount
   totalIncome -= incomeAmount;
-  budget -= incomeAmount; // Decrease budget by deleted income amount
+  budget -= incomeAmount;
 
-  const incomeItem = button.parentNode;
-  incomeItem.remove(); // Remove income item from list
+  // Remove the income item from the primary list
+  const primaryItem = document.getElementById(incomeId);
+  if (primaryItem) {
+    primaryItem.remove();
+  }
 
+  // Remove the corresponding item from the dashboard list
+  const dashboardItem = document.getElementById(`dashboard-${incomeId}`);
+  if (dashboardItem) {
+    dashboardItem.remove();
+  }
+
+  // Update dashboard and charts after deletion
   updateDashboard();
   updateBarChart();
   updateLineChart();
-  updateChart(); // Update chart after deleting income
+  updateChart();
 }
 
 function addExpense() {
@@ -91,23 +109,28 @@ function addExpense() {
   if (expenseDesc && expenseAmount > 0) {
     totalExpenses += expenseAmount;
 
-    // Add expense to list
+    // Create a unique ID for the expense item
+    const expenseId = `expense-${Date.now()}`;
+
+    // Add expense to the primary list
     const expenseList = document.getElementById("expense-list");
     const listItem = document.createElement("li");
-    listItem.className = "expense-item"; // Apply the new styles here
+    listItem.className = "expense-item";
+    listItem.id = expenseId; // Set unique ID
 
     listItem.innerHTML = `
       <span class="expense-category">${expenseCategory} | $${expenseAmount.toFixed(
-      2
-    )} | ${expenseDesc}</span>
-      <button class="delete-btn" onclick="deleteExpense(this, ${expenseAmount})">Delete</button>
+        2
+      )} | ${expenseDesc}</span>
+      <button class="delete-btn" onclick="deleteExpense('${expenseId}', ${expenseAmount})">Delete</button>
     `;
     expenseList.appendChild(listItem);
 
-    //dashboard
+    // Add expense to the secondary dashboard list
     const expenseList1 = document.getElementById("expense-list-1");
     const listItem1 = document.createElement("li");
-    listItem1.className = "expense-item"; // Apply the new styles here
+    listItem1.className = "expense-item";
+    listItem1.id = `dashboard-${expenseId}`; // Set unique ID for secondary list
 
     listItem1.innerHTML = `
       <span class="expense-category">Expense: $${expenseAmount.toFixed(
@@ -121,22 +144,31 @@ function addExpense() {
     document.getElementById("expense-amount").value = "";
     document.getElementById("expense-category").value = "Other";
 
+    // Update dashboard and charts
     updateDashboard();
     updateBarChart();
     updateLineChart();
-    updateChart(); // Update chart after adding the expense
+    updateChart();
   }
 }
 
-function deleteExpense(button, expenseAmount) {
-  // Remove the expense amount from the total expenses
+function deleteExpense(expenseId, expenseAmount) {
+  // Decrease total expenses
   totalExpenses -= expenseAmount;
 
-  // Remove the list item from the DOM
-  const listItem = button.parentNode;
-  listItem.remove();
+  // Remove the item from the primary list
+  const primaryItem = document.getElementById(expenseId);
+  if (primaryItem) {
+    primaryItem.remove();
+  }
 
-  // Update the dashboard and chart after deletion
+  // Remove the corresponding item from the secondary dashboard list
+  const secondaryItem = document.getElementById(`dashboard-${expenseId}`);
+  if (secondaryItem) {
+    secondaryItem.remove();
+  }
+
+  // Update dashboard and charts after deletion
   updateDashboard();
   updateBarChart();
   updateLineChart();
@@ -169,11 +201,13 @@ function checkBudgetAlert(remainingBudget) {
       "Budget Exceeded",
       "You have exceeded your budget! Consider reducing expenses."
     );
+    alert("You have exceeded your budget! Consider reducing expenses.");
   } else if (expenseRatio >= WARNING_THRESHOLD) {
     showAlert(
       "Warning: Budget Approaching Limit",
       "You are approaching your budget limit. Spend cautiously."
     );
+    alert("You are approaching your budget limit. Spend cautiously.");
   } else {
     clearAlert();
   }
@@ -210,7 +244,7 @@ function initializeChart() {
             totalExpenses,
             totalIncome,
           ],
-          backgroundColor: ["#89CFF0", "#ED7C63", "#63EDAA"], // Yellow, green and red colors
+          backgroundColor: ["#00BFFF", "#ED7C63", "#63EDAA"], // Yellow, green and red colors
         },
       ],
     },
@@ -246,7 +280,7 @@ function initializeBarChart() {
         {
           label: "Budget Analysis",
           data: [budget - totalExpenses, totalExpenses, totalIncome],
-          backgroundColor: ["#89CFF0", "#ED7C63", "#63EDAA"], // Yellow for remaining budget, red for expenses, green for income
+          backgroundColor: ["#00BFFF", "#ED7C63", "#63EDAA"], // Yellow for remaining budget, red for expenses, green for income
         },
       ],
     },
@@ -352,8 +386,13 @@ function updateLineChart() {
 
   const incomeData = [];
   const expenseData = [];
-  const labels = [];
+  
+  // Determine the maximum number of records between income and expenses
+  const maxRecords = Math.max(incomeItems.length, expenseItems.length);
+  
+  const labels = Array.from({ length: maxRecords }, (_, index) => `Record ${index + 1}`);
 
+  // Populate incomeData with income amounts, or 0 if there are fewer income records
   incomeItems.forEach((item, index) => {
     const amount = parseFloat(
       item
@@ -362,10 +401,15 @@ function updateLineChart() {
         .replace("$", "")
         .trim()
     );
-    incomeData.push(amount);
-    labels.push(`Record ${index + 1}`);
+    incomeData[index] = amount;
   });
 
+  // Fill any missing income records with 0 for alignment with the maxRecords length
+  while (incomeData.length < maxRecords) {
+    incomeData.push(0);
+  }
+
+  // Populate expenseData with expense amounts, or 0 if there are fewer expense records
   expenseItems.forEach((item, index) => {
     const amount = parseFloat(
       item
@@ -374,16 +418,21 @@ function updateLineChart() {
         .replace("$", "")
         .trim()
     );
-    expenseData.push(amount);
-    // labels.push(`Expense ${index + 1}`);
+    expenseData[index] = amount;
   });
 
-  // Update the existing chart data and labels
+  // Fill any missing expense records with 0 for alignment with the maxRecords length
+  while (expenseData.length < maxRecords) {
+    expenseData.push(0);
+  }
+
+  // Update the chart with aligned data and labels
   incomeExpenseLineChart.data.labels = labels;
   incomeExpenseLineChart.data.datasets[0].data = incomeData;
   incomeExpenseLineChart.data.datasets[1].data = expenseData;
   incomeExpenseLineChart.update();
 }
+
 
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
@@ -560,4 +609,14 @@ const quotes = [
 function newQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   document.getElementById("quote").innerText = quotes[randomIndex];
+}
+
+function submitForm() {
+  // Display the alert message
+  alert("Thank you for your Response!");
+
+  // Clear the form inputs
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("message").value = "";
 }
