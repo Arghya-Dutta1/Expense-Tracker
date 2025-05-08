@@ -25,6 +25,9 @@ A simple front end web application that allows users to set a budget, track expe
 - **Chart.js** - for the doughnut, bar and line chart that visualizes budget, expenses and income.
 - **Html2Canvas** - for taking snapshot of the dashboard for the Expense Report.
 - **jsPDF** - for exporting the Expense Report to PDF format.
+- **Node.js** - for running the local server.
+- **Express** - for handling server-side logic.
+- **MongoDB** - for storing user data.
 
 ## Getting Started
 
