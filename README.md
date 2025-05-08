@@ -1,67 +1,125 @@
 # Expense-Tracker
-A simple front end web application that allows users to set a budget, track expenses, and add income. The app provides an interactive dashboard with different charts (doughnut, bar, line, etc) showing the breakdown of the budget, expenses, and income. It also allows users to add, delete, and categorize their expenses and income, and later export it to pdf and csv file format.
 
+A full-stack web application that allows users to set a budget, track expenses and income, categorize transactions, and view detailed analytics through interactive charts. Users can also export their financial reports to PDF and CSV formats. The app features a clean, responsive UI and now supports backend integration for persistent data storage and user authentication.
 
-![Screenshot 2024-11-11 224547](https://github.com/user-attachments/assets/bdb80009-582b-40fc-9127-2a5ef335f348)
+![Screenshot](https://github.com/user-attachments/assets/bdb80009-582b-40fc-9127-2a5ef335f348)
 
+---
 
-## Features
+## 🚀 Features
 
 - Set and manage your **budget**.
-- Add **expenses** and categorize them into predefined categories.
-- Add **income** and increase your budget.
-- View a **doughnut, bar and line chart** representing your expenses, budget, and income.
-- **Responsive design** with a clean and modern user interface using **TailwindCSS**.
-- Interactive **expense list** with options to delete entries.
-- **Income list** with categories and descriptions.
-- **Real-time update** of the dashboard after adding expenses or income.
-- **Export** your **Expense Report** to **PDF** and **CSV** format.
+- Add, edit, and delete **income** and **expense** entries.
+- Categorize transactions (e.g., Food, Travel, Rent, Salary, etc.).
+- Interactive charts: **Doughnut**, **Bar**, and **Line** to visualize data.
+- **Real-time updates** to charts and dashboard on data changes.
+- **Authentication system** for secure user login and registration.
+- Export your expense reports to **PDF** and **CSV**.
+- **Mobile-responsive** design with modern UI.
+- **Persistent backend storage** using MongoDB.
+- Organized transaction history with filtering by date and category.
 
-## Technologies Used
+---
 
-- **HTML5** - for the structure of the web pages.
-- **CSS** - for styling the app with **TailwindCSS**.
-- **JavaScript** - for dynamic functionality (adding expenses/income, updating the chart, etc.).
-- **Chart.js** - for the doughnut, bar and line chart that visualizes budget, expenses and income.
-- **Html2Canvas** - for taking snapshot of the dashboard for the Expense Report.
-- **jsPDF** - for exporting the Expense Report to PDF format.
-- **Node.js** - for running the local server.
-- **Express** - for handling server-side logic.
-- **MongoDB** - for storing user data.
+## 🛠 Technologies Used
 
-## Getting Started
+### Frontend
+- **HTML5** & **CSS3**
+- **TailwindCSS** — utility-first CSS framework for styling
+- **JavaScript (ES6+)** — DOM manipulation and client-side logic
+- **Chart.js** — for rendering charts
+- **Html2Canvas** & **jsPDF** — for PDF export
 
-To get started with the Expense Tracker app, follow these steps:
+### Backend
+- **Node.js** — JavaScript runtime
+- **Express.js** — lightweight backend framework
+- **MongoDB** — NoSQL database for user and transaction data
+- **Mongoose** — ODM for MongoDB
+
+---
+
+## 📦 Installation
 
 ### Prerequisites
 
-- A web browser (Chrome, Firefox, etc.)
-- Basic knowledge of **HTML**, **CSS**, and **JavaScript**.
+- [Node.js](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- Basic understanding of HTML, CSS, JS, Node.js, and MongoDB
 
-### Installation
+### Steps
 
-1. **Clone the repository**:
-
-   ```console
+1. **Clone the repository**
+   ```bash
    git clone https://github.com/Arghya-Dutta1/expense-tracker.git
+   cd expense-tracker
    ```
-2. **Open the index.html file in your preferred browser**
-   You can open the HTML file directly in a browser or use a local development server like VS Code Live Server for a better development experience.
 
-## Contributing
-Feel free to fork this repository and submit pull requests. Contributions are welcome!
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### Steps to contribute:
-- Fork this repository.
-- Create a new branch.
-- Make your changes and commit them.
-- Push to your forked repository.
-- Open a pull request.
+3. **Set up environment variables**
 
-## License
-This project is open-source and available under the MIT License.
+   Create a `.env` file in the root with the following:
+   ```
+   MONGO_URI=your_mongodb_connection_string
+   PORT=5000
+   ```
 
-## Acknowledgements
-- TailwindCSS for the beautiful and responsive UI components.
-- Chart.js for the doughnut, bar and line chart implementation.
-- Ben Franklin for the inspirational financial quote used in the app.
+4. **Start the server**
+   ```bash
+   npm start
+   ```
+
+5. **Access the App**
+
+   Open your browser and go to: `http://localhost:5000`
+
+---
+
+## 📂 Project Structure
+
+```
+expense-tracker/
+├── index.html        # Main HTML file
+├── style.css         # CSS styles
+├── script.js         # JavaScript for frontend logic
+├── login.html        
+├── register.html     
+|── models/           # Mongoose models
+│── server.js         # Main Express server
+├── .env              # Environment variables
+├── package.json
+└── README.md
+```
+
+---
+
+## 🙌 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/YourFeature`
+3. Commit your changes: `git commit -m "Added new feature"`
+4. Push to the branch: `git push origin feature/YourFeature`
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+See the [LICENSE](LICENSE) file for details.
+Feel free to use, modify, and distribute this project as per the terms of the license.
+
+---
+
+## 🙏 Acknowledgements
+
+- **TailwindCSS** — for rapid and responsive UI development
+- **Chart.js** — for intuitive chart rendering
+- **Html2Canvas** and **jsPDF** — for document generation
+- **MongoDB + Mongoose** — for data storage and management
+- Ben Franklin — for the inspirational quote used in the app
