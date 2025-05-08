@@ -112,9 +112,10 @@ app.get("/logout", (req, res) => {
 // Add Expense
 app.post("/api/expenses", authMiddleware, async (req, res) => {
   try {
-    const { category, description, amount } = req.body;
+    const { expenseid, category, description, amount } = req.body;
     const expense = new Expense({
       userid: req.user.id,
+      expenseid,
       category,
       description,
       amount,
@@ -130,9 +131,10 @@ app.post("/api/expenses", authMiddleware, async (req, res) => {
 // Add Income
 app.post("/api/incomes", authMiddleware, async (req, res) => {
   try {
-    const { category, description, amount } = req.body;
+    const { incomeid, category, description, amount } = req.body;
     const income = new Income({
       userid: req.user.id,
+      incomeid,
       category,
       description,
       amount,
@@ -175,7 +177,7 @@ app.delete("/api/incomes/:id", authMiddleware, async (req, res) => {
     const { id } = req.params;
   
     try {
-      const income = await Income.findOneAndDelete({ _id: id, userid: req.user._id });
+      const income = await Income.findOneAndDelete({ incomeid: id, userid: req.user._id });
       if (!income) return res.status(404).json({ error: "Income not found or unauthorized" });
   
       res.json({ message: "Income deleted successfully", income });
@@ -187,9 +189,9 @@ app.delete("/api/incomes/:id", authMiddleware, async (req, res) => {
   // Delete Expense
   app.delete("/api/expenses/:id", authMiddleware, async (req, res) => {
     const { id } = req.params;
-  
+    console.log('In delete expense section');
     try {
-      const expense = await Expense.findOneAndDelete({ _id: id, userid: req.user._id });
+      const expense = await Expense.findOneAndDelete({ expenseid: id, userid: req.user._id });
       if (!expense) return res.status(404).json({ error: "Expense not found or unauthorized" });
   
       res.json({ message: "Expense deleted successfully", expense });

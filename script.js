@@ -77,7 +77,7 @@ function addIncome() {
       fetch('/api/incomes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, description, amount: incomeInput })
+        body: JSON.stringify({ incomeid: incomeId ,category, description, amount: incomeInput })
       });
     }    
   }
@@ -110,7 +110,7 @@ function deleteIncome(incomeId, incomeAmount) {
     fetch(`/api/incomes`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: incomeAmount }) // Optional, better to pass unique ID when backend supports delete
+      body: JSON.stringify({ amount: incomeId }) // Optional, better to pass unique ID when backend supports delete
     });
   }  
 }
@@ -135,9 +135,7 @@ function addExpense() {
     listItem.id = expenseId; // Set unique ID
 
     listItem.innerHTML = `
-      <span class="expense-category">${expenseCategory} | $${expenseAmount.toFixed(
-        2
-      )} | ${expenseDesc}</span>
+      <span class="expense-category">${expenseCategory} | $${expenseAmount.toFixed(2)} | ${expenseDesc}</span>
       <button class="delete-btn" onclick="deleteExpense('${expenseId}', ${expenseAmount})">Delete</button>
     `;
     expenseList.appendChild(listItem);
@@ -170,7 +168,7 @@ function addExpense() {
       fetch('/api/expenses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category: expenseCategory, description: expenseDesc, amount: expenseAmount })
+        body: JSON.stringify({ expenseid: expenseId, category: expenseCategory, description: expenseDesc, amount: expenseAmount })
       });
     }    
   }
@@ -202,7 +200,7 @@ function deleteExpense(expenseId, expenseAmount) {
     fetch(`/api/expenses`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: expenseAmount }) // Optional, better to use unique ID
+      body: JSON.stringify({ expenseid: expenseId }) 
     });
   }  
 }
@@ -701,9 +699,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   expenses.forEach((expense) => {
     totalExpenses += expense.amount;
     updateDashboard();
-  // initializeChart();
-  // initializeBarChart();
-  // initializeLineChart();
   updateChart();
   updateBarChart();
   updateLineChart();
@@ -714,6 +709,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     listItem.id = expenseId;
     listItem.innerHTML = `
       <span class="expense-category">${expense.category} | $${expense.amount.toFixed(2)} | ${expense.description}</span>
+      <button class="delete-btn" onclick="deleteExpense(${expense.expenseid}, ${expense.amount})">Delete</button>
     `;
     document.getElementById("expense-list").appendChild(listItem);
 
