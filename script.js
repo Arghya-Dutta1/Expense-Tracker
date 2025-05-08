@@ -5,6 +5,8 @@ menuToggle.addEventListener("click", () => {
   mobileMenu.classList.toggle("hidden");
 });
 
+const isBackendEnabled = true;
+
 let budget = 0;
 let totalExpenses = 0;
 let totalIncome = 0;
@@ -13,9 +15,7 @@ const WARNING_THRESHOLD = 0.8; // 80% of the budget
 const EXCEEDED_THRESHOLD = 1.0; // 100% of the budget
 
 function setBudget() {
-  const budgetInput = document.getElementById("budget-input").value;
-  budget = parseFloat(budgetInput) || 0;
-  document.getElementById("budget-input").value = "";
+  budget = 0;
   updateDashboard();
   initializeChart();
   initializeBarChart();
@@ -72,6 +72,14 @@ function addIncome() {
     updateBarChart();
     updateLineChart();
     updateChart();
+
+    if (isBackendEnabled) {
+      fetch('/api/incomes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, description, amount: incomeInput })
+      });
+    }    
   }
 }
 
@@ -97,6 +105,14 @@ function deleteIncome(incomeId, incomeAmount) {
   updateBarChart();
   updateLineChart();
   updateChart();
+
+  if (isBackendEnabled) {
+    fetch(`/api/incomes`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: incomeAmount }) // Optional, better to pass unique ID when backend supports delete
+    });
+  }  
 }
 
 function addExpense() {
@@ -149,6 +165,14 @@ function addExpense() {
     updateBarChart();
     updateLineChart();
     updateChart();
+
+    if (isBackendEnabled) {
+      fetch('/api/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: expenseCategory, description: expenseDesc, amount: expenseAmount })
+      });
+    }    
   }
 }
 
@@ -173,6 +197,14 @@ function deleteExpense(expenseId, expenseAmount) {
   updateBarChart();
   updateLineChart();
   updateChart();
+
+  if (isBackendEnabled) {
+    fetch(`/api/expenses`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: expenseAmount }) // Optional, better to use unique ID
+    });
+  }  
 }
 
 function updateDashboard() {
@@ -620,3 +652,77 @@ function submitForm() {
   document.getElementById("email").value = "";
   document.getElementById("message").value = "";
 }
+
+window.addEventListener("DOMContentLoaded", async () => {
+  setBudget();
+  if (!isBackendEnabled){
+    return;
+  }
+
+  const [incomeRes, expenseRes] = await Promise.all([
+    fetch('/api/incomes'),
+    fetch('/api/expenses')
+  ]);
+
+  const incomes = await incomeRes.json();
+  const expenses = await expenseRes.json();
+
+  incomes.forEach((income) => {
+    totalIncome += income.amount;
+    budget += income.amount;
+
+    updateDashboard();
+  // initializeChart();
+  // initializeBarChart();
+  // initializeLineChart();
+  updateChart();
+  updateBarChart();
+  updateLineChart();
+
+    // Manually add UI element
+    const incomeId = `income-${Date.now()}-${Math.random()}`;
+    const listItem = document.createElement("li");
+    listItem.className = "income-item";
+    listItem.id = incomeId;
+    listItem.innerHTML = `
+      <span class="income-category">${income.category} | $${income.amount.toFixed(2)} | ${income.description}</span>
+    `;
+    document.getElementById("income-list").appendChild(listItem);
+
+    const dashboardItem = document.createElement("li");
+    dashboardItem.className = "income-item";
+    dashboardItem.id = `dashboard-${incomeId}`;
+    dashboardItem.innerHTML = `
+      <span class="income-category">Income: $${income.amount.toFixed(2)} - ${income.description} (${income.category})</span>
+    `;
+    document.getElementById("income-list-1").appendChild(dashboardItem);
+  });
+
+  expenses.forEach((expense) => {
+    totalExpenses += expense.amount;
+    updateDashboard();
+  // initializeChart();
+  // initializeBarChart();
+  // initializeLineChart();
+  updateChart();
+  updateBarChart();
+  updateLineChart();
+
+    const expenseId = `expense-${Date.now()}-${Math.random()}`;
+    const listItem = document.createElement("li");
+    listItem.className = "expense-item";
+    listItem.id = expenseId;
+    listItem.innerHTML = `
+      <span class="expense-category">${expense.category} | $${expense.amount.toFixed(2)} | ${expense.description}</span>
+    `;
+    document.getElementById("expense-list").appendChild(listItem);
+
+    const dashboardItem = document.createElement("li");
+    dashboardItem.className = "expense-item";
+    dashboardItem.id = `dashboard-${expenseId}`;
+    dashboardItem.innerHTML = `
+      <span class="expense-category">Expense: $${expense.amount.toFixed(2)} - ${expense.description} (${expense.category})</span>
+    `;
+    document.getElementById("expense-list-1").appendChild(dashboardItem);
+  });
+});
