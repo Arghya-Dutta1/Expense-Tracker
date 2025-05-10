@@ -1,6 +1,6 @@
 # Expense-Tracker
 
-A full-stack web application that allows users to set a budget, track expenses and income, categorize transactions, and view detailed analytics through interactive charts. Users can also export their financial reports to PDF and CSV formats. The app features a clean, responsive UI and now supports backend integration for persistent data storage and user authentication.
+A full-stack containerized web application that allows users to manage their finances by tracking income, expenses and budgets. The app features dynamic charts, authentication, and export functionality, and is now fully containerized using Docker with automated CI/CD pipeline integration via Jenkins.
 
 ![Screenshot](https://github.com/user-attachments/assets/bdb80009-582b-40fc-9127-2a5ef335f348)
 
@@ -8,33 +8,35 @@ A full-stack web application that allows users to set a budget, track expenses a
 
 ## 🚀 Features
 
-- Set and manage your **budget**.
-- Add, edit, and delete **income** and **expense** entries.
-- Categorize transactions (e.g., Food, Travel, Rent, Salary, etc.).
-- Interactive charts: **Doughnut**, **Bar**, and **Line** to visualize data.
-- **Real-time updates** to charts and dashboard on data changes.
-- **Authentication system** for secure user login and registration.
-- Export your expense reports to **PDF** and **CSV**.
-- **Mobile-responsive** design with modern UI.
-- **Persistent backend storage** using MongoDB.
-- Organized transaction history with filtering by date and category.
+- User authentication and registration system
+- Add, delete, and categorize **income** and **expenses**
+- Set and manage a personal **budget**
+- Interactive dashboard with **doughnut, bar, and line charts**
+- **Real-time updates** to dashboard upon transaction changes
+- **Export reports** to **PDF** and **CSV**
+- Fully **responsive UI** built with **TailwindCSS**
+- **MongoDB** backend for persistent data storage
+- Containerized with **Docker** for consistency across environments
+- Automated deployment with **Jenkins CI/CD Pipeline**
 
 ---
 
 ## 🛠 Technologies Used
 
 ### Frontend
-- **HTML5** & **CSS3**
-- **TailwindCSS** — utility-first CSS framework for styling
-- **JavaScript (ES6+)** — DOM manipulation and client-side logic
-- **Chart.js** — for rendering charts
-- **Html2Canvas** & **jsPDF** — for PDF export
+- **HTML5**, **CSS3**, **JavaScript (ES6+)**
+- **TailwindCSS** — utility-first styling
+- **Chart.js**, **Html2Canvas**, **jsPDF**
 
 ### Backend
-- **Node.js** — JavaScript runtime
-- **Express.js** — lightweight backend framework
-- **MongoDB** — NoSQL database for user and transaction data
-- **Mongoose** — ODM for MongoDB
+- **Node.js**, **Express.js**
+- **MongoDB**, **Mongoose**
+
+### DevOps
+- **Docker** — for containerizing the app
+- **Docker Compose** — for managing multi-container services
+- **Jenkins** — for CI/CD pipeline automation
+- **GitHub** — version control
 
 ---
 
@@ -42,9 +44,10 @@ A full-stack web application that allows users to set a budget, track expenses a
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/)
-- [MongoDB](https://www.mongodb.com/)
-- Basic understanding of HTML, CSS, JS, Node.js, and MongoDB
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Jenkins](https://www.jenkins.io/)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (or local MongoDB)
 
 ### Steps
 
@@ -54,27 +57,92 @@ A full-stack web application that allows users to set a budget, track expenses a
    cd expense-tracker
    ```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+2. **Update environment variables**
 
-3. **Set up environment variables**
-
-   Create a `.env` file in the root with the following:
+   Create a `.env` file:
    ```
    MONGO_URI=your_mongodb_connection_string
    PORT=5000
    ```
 
-4. **Start the server**
+3. **Build and start containers using Docker Compose**
    ```bash
-   npm start
+   docker-compose up --build
    ```
 
-5. **Access the App**
+4. **Access the app**
+   ```
+   http://localhost:3000
+   ```
 
-   Open your browser and go to: `http://localhost:5000`
+---
+
+## 🧪 CI/CD Pipeline with Jenkins
+
+The CI/CD pipeline automates the following:
+
+- Code pull from GitHub on commit
+- Build Docker image
+- Push image to Docker Hub
+- Deploy the latest container version
+
+### Jenkinsfile Example
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Clone Repository') {
+            steps {
+                bat "git clone %REPO_URL%"
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    dir("${PROJECT_NAME}") {
+                        bat 'docker-compose build'
+                    }
+                }
+            }
+        }
+
+
+        stage('Tag Docker Image') {
+            steps {
+                bat 'docker tag expense-tracker-backend %IMAGE_NAME%'
+            }
+        }
+
+        stage('Login to DockerHub') {
+            steps {
+                bat "echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin"
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                bat 'docker push %IMAGE_NAME%'
+            }
+        }
+
+        stage('Start Containers') {
+            steps {
+                dir("${PROJECT_NAME}") {
+                    bat 'docker-compose up -d'
+                }
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -82,14 +150,13 @@ A full-stack web application that allows users to set a budget, track expenses a
 
 ```
 expense-tracker/
-├── index.html        # Main HTML file
-├── style.css         # CSS styles
-├── script.js         # JavaScript for frontend logic
-├── login.html        
-├── register.html     
-|── models/           # Mongoose models
-│── server.js         # Main Express server
-├── .env              # Environment variables
+├── HTML, CSS, JS  Files    # Frontend files
+├── models/                 # Mongoose models
+│── server.js               # Express server
+├── Dockerfile              # Container definition
+├── docker-compose.yml      # Multi-service orchestration
+├── Jenkinsfile             # CI/CD pipeline script
+├── .env                    # Environment configuration
 ├── package.json
 └── README.md
 ```
@@ -98,12 +165,10 @@ expense-tracker/
 
 ## 🙌 Contributing
 
-Contributions are welcome! Please follow these steps:
-
 1. Fork the repository
-2. Create a new branch: `git checkout -b feature/YourFeature`
-3. Commit your changes: `git commit -m "Added new feature"`
-4. Push to the branch: `git push origin feature/YourFeature`
+2. Create a branch: `git checkout -b feature/FeatureName`
+3. Make changes and commit: `git commit -m "Added FeatureName"`
+4. Push: `git push origin feature/FeatureName`
 5. Open a Pull Request
 
 ---
@@ -112,14 +177,13 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the **MIT License**.
 See the [LICENSE](LICENSE) file for details.
-Feel free to use, modify, and distribute this project as per the terms of the license.
 
 ---
 
 ## 🙏 Acknowledgements
 
-- **TailwindCSS** — for rapid and responsive UI development
-- **Chart.js** — for intuitive chart rendering
-- **Html2Canvas** and **jsPDF** — for document generation
-- **MongoDB + Mongoose** — for data storage and management
+- TailwindCSS, Chart.js, Html2Canvas, jsPDF for frontend design and functionality
+- Node.js and Express.js for backend development
+- Docker and Jenkins for DevOps automation
+- MongoDB + Mongoose for database architecture
 - Ben Franklin — for the inspirational quote used in the app
