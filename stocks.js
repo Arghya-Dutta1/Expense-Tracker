@@ -1,3 +1,11 @@
+const logoMap = {
+  GOOGL: "icons8-google.svg",
+  AAPL: "icons8-apple-logo.svg",
+  IBM: "icons8-ibm.svg",
+  MSFT: "icons8-microsoft.svg",
+  AMZN: "icons8-amazon.svg",
+};
+
 function formatPrice(open, close) {
   const openValue = parseFloat(open);
   const closeValue = parseFloat(close);
@@ -31,7 +39,7 @@ async function fetchMultipleCompaniesData() {
       const stockData = data[symbol];
       if (stockData?.status === "ok") {
         const latest = stockData.values[0];
-        const logo = `assests/icons8-${symbol === "AAPL" ? "apple-logo" : symbol.toLowerCase()}.svg`;
+        const logo = `./assests/${logoMap[symbol] || "default.png"}`;
         const companyName = symbol === "AAPL" ? "Apple" : symbol === "GOOGL" ? "Google" : symbol === "MSFT" ? "Microsoft" : symbol === "AMZN" ? "Amazon" : "IBM";
 
         document.getElementById(summaryId).innerHTML = `
