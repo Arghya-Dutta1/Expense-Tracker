@@ -15,6 +15,7 @@ A full-stack containerized web application that allows users to manage their fin
 - **Export reports** to **PDF** and **CSV**
 - Fully **responsive UI** built with **TailwindCSS**
 - Brief overview of the **Stock market**
+- **RESTful API** for managing income, expenses, and stock data
 - **MongoDB** backend for persistent data storage
 - Containerized with **Docker** for consistency across environments
 - Automated deployment with **Jenkins CI/CD Pipeline**
