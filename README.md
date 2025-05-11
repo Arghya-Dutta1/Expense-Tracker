@@ -62,7 +62,7 @@ A full-stack containerized web application that allows users to manage their fin
    Create a `.env` file:
    ```
    MONGO_URI=your_mongodb_connection_string
-   PORT=5000
+   PORT=3000
    ```
 
 3. **Build and start containers using Docker Compose**
