@@ -10,6 +10,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017/expense-tracker
       - PORT=3000
+      - STOCKS_API_KEY=d242e403e6f64c17a0fdef3e2ca116d7
 
   mongo:
     image: mongo:6
