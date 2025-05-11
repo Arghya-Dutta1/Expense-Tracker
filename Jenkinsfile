@@ -67,7 +67,7 @@ pipeline {
 
     post {
         success {
-            mail to: 'aryadutta004@gmail.com',
+            mail to: 'arghyadutta2002@gmail.com',
                  subject: "✅ Build Success - #${env.BUILD_NUMBER}",
                  body: """
     🎉 Congratulations! The Jenkins pipeline has successfully completed all stages.
@@ -89,7 +89,7 @@ pipeline {
     """
         }
         failure {
-            mail to: 'aryadutta004@gmail.com',
+            mail to: 'arghyadutta2002@gmail.com',
                  subject: "❌ Build Failed - #${env.BUILD_NUMBER}",
                  body: """
     ⚠️ Unfortunately, the pipeline encountered an error during execution.
