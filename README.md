@@ -10,11 +10,11 @@ A full-stack containerized web application that allows users to manage their fin
 
 - User authentication and registration system
 - Add, delete, and categorize **income** and **expenses**
-- Set and manage a personal **budget**
 - Interactive dashboard with **doughnut, bar, and line charts**
 - **Real-time updates** to dashboard upon transaction changes
 - **Export reports** to **PDF** and **CSV**
 - Fully **responsive UI** built with **TailwindCSS**
+- Brief overview of the **Stock market**
 - **MongoDB** backend for persistent data storage
 - Containerized with **Docker** for consistency across environments
 - Automated deployment with **Jenkins CI/CD Pipeline**
