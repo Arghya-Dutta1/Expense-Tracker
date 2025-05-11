@@ -54,13 +54,8 @@ pipeline {
             steps {
                 dir("${PROJECT_NAME}") {
                     bat 'docker-compose up -d'
+                    bat 'docker ps -a'
                 }
-            }
-        }
-
-        stage('Verify Running Containers') {
-            steps {
-                bat 'docker ps -a'
             }
         }
     }
