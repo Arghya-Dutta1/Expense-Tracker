@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const env = require("dotenv");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const fetch = require("node-fetch");
+const cors = require("cors");
 
 const Expense = require("./models/Expense");
 const Income = require("./models/Income");
@@ -14,6 +16,7 @@ const app = express();
 env.config();
 
 const PORT = process.env.PORT;
+const apiKey = process.env.STOCKS_API_KEY;
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -71,8 +74,8 @@ app.post("/register", async (req, res) => {
       password: hashedPassword,
     });
     await newUser.save();
-    console.log('Registration Successful');
-    res.redirect('/login');
+    console.log("Registration Successful");
+    res.redirect("/login");
   } catch (err) {
     console.error(err);
     res.status(500).send("Registration failed");
@@ -94,8 +97,8 @@ app.post("/login", async (req, res) => {
       maxAge: 20 * 60 * 1000,
       httpOnly: true,
     });
-    console.log('LogIn Successful');
-    res.redirect('/home')
+    console.log("LogIn Successful");
+    res.redirect("/home");
   } catch (err) {
     console.error(err);
     res.status(500).send("Login error");
@@ -105,8 +108,8 @@ app.post("/login", async (req, res) => {
 // Logout
 app.get("/logout", (req, res) => {
   res.clearCookie("login_status");
-  console.log('LogOut Successful');
-  res.redirect('/');
+  console.log("LogOut Successful");
+  res.redirect("/");
 });
 
 // Add Expense
@@ -174,31 +177,66 @@ app.get("/api/incomes", authMiddleware, async (req, res) => {
 
 // Delete Income
 app.delete("/api/incomes/:id", authMiddleware, async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const income = await Income.findOneAndDelete({ incomeid: id, userid: req.user._id });
-      if (!income) return res.status(404).json({ error: "Income not found or unauthorized" });
-  
-      res.json({ message: "Income deleted successfully", income });
-    } catch (err) {
-      res.status(500).json({ error: "Failed to delete income" });
-    }
-  });
-  
-  // Delete Expense
-  app.delete("/api/expenses/:id", authMiddleware, async (req, res) => {
-    const { id } = req.params;
-    console.log('In delete expense section');
-    try {
-      const expense = await Expense.findOneAndDelete({ expenseid: id, userid: req.user._id });
-      if (!expense) return res.status(404).json({ error: "Expense not found or unauthorized" });
-  
-      res.json({ message: "Expense deleted successfully", expense });
-    } catch (err) {
-      res.status(500).json({ error: "Failed to delete expense" });
-    }
-  });  
+  const { id } = req.params;
+
+  try {
+    const income = await Income.findOneAndDelete({
+      incomeid: id,
+      userid: req.user._id,
+    });
+    if (!income)
+      return res
+        .status(404)
+        .json({ error: "Income not found or unauthorized" });
+
+    res.json({ message: "Income deleted successfully", income });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete income" });
+  }
+});
+
+// Delete Expense
+app.delete("/api/expenses/:id", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  console.log("In delete expense section");
+  try {
+    const expense = await Expense.findOneAndDelete({
+      expenseid: id,
+      userid: req.user._id,
+    });
+    if (!expense)
+      return res
+        .status(404)
+        .json({ error: "Expense not found or unauthorized" });
+
+    res.json({ message: "Expense deleted successfully", expense });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete expense" });
+  }
+});
+
+async function fetchStockData(symbol) {
+  const url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1min&apikey=${apiKey}`;
+  const response = await fetch(url);
+  return response.json();
+}
+
+app.get("/api/stocks", async (req, res) => {
+  try {
+    const companies = ["GOOGL", "AAPL", "IBM", "MSFT", "AMZN"];
+    const results = await Promise.all(companies.map(fetchStockData));
+
+    const data = {};
+    companies.forEach((company, i) => {
+      data[company] = results[i];
+    });
+
+    res.json(data);
+  } catch (error) {
+    console.error("Backend error:", error);
+    res.status(500).json({ error: "Failed to fetch stock data" });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}/`);
