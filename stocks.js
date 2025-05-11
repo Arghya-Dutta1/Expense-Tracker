@@ -23,7 +23,7 @@ function formatPrice(open, close) {
 
 async function fetchMultipleCompaniesData() {
   try {
-    const response = await fetch("http://localhost:3000/api/stocks");
+    const response = await fetch("/api/stocks");
     const data = await response.json();
 
     const companies = {
